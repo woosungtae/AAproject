@@ -1,0 +1,9 @@
+eclipse.preferences.version=1
+encoding//src/main/java/com/AA/board/controller/BoardControllerImpl.java=UTF-8
+encoding//src/main/java/com/AA/company/controller/CompanyControllerImpl.java=UTF-8
+encoding//src/main/java/com/AA/mypage/controller/MyPageControllerImpl.java=UTF-8
+encoding//src/main/java/com/AA/mypage/service/MyPageServiceImpl.java=UTF-8
+encoding//src/main/java/com/AA/order/controller/OrderControllerImpl.java=UTF-8
+encoding//src/main/java/com/AA/order/service/OrderServiceImpl.java=UTF-8
+encoding//src/main/java/com/AA/order/vo/OrderVO.java=UTF-8
+encoding//src/main/webapp/resources/css/main.css=UTF-8

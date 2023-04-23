@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+      PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="mapper.adboard">
+<resultMap id="itemsResult" type="itemVO">
+    <result property="level" column="level" />
+    <result property="adboard_num" column="adboard_num" />
+    <result property="adboard_title" column="adboard_title" />
+    <result property="adboard_content" column="adboard_content" />
+    <result property="adboard_category" column="adboard_category" />
+    <result property="writeDate" column="writeDate" />
+    <result property="imageFileName" column="imageFileName" />
+    <result property="id" column="id" />
+    <result property="viewCnt" column="viewCnt" />
+    <result property="id" column="id" />
+  </resultMap> 
+  
+  <resultMap id="imgResult" type="imageVO">
+	  <result property="imageFileNO" column="imageFileNO" />
+	  <result property="adboard_num" column="adboard_num" />
+ </resultMap>
+
+  <select id="selectAllItemsList" resultMap="itemsResult"   >
+    <![CDATA[
+SELECT 
+    CASE 
+        WHEN (SELECT COUNT(*) FROM adboard t2 WHERE t2.adboard_num > t1.adboard_num IS NULL) > 0 
+        THEN CONCAT(REPEAT('  ', (SELECT COUNT(*) FROM adboard t2 WHERE t2.adboard_num > t1.adboard_num IS NULL) - 1), '|--') 
+        ELSE ''
+    END AS adboard_title_alias,
+    t1.adboard_num, t1.adboard_category, t1.adboard_title, t1.adboard_content, t1.id, t1.writeDate, t1.viewCnt
+FROM adboard t1
+ORDER BY t1.adboard_num DESC;
+    ]]>
+  </select>
+  
+	<!--단일이미지 추가  -->
+	 
+  <insert id="insertNewItem"  parameterType="java.util.Map">
+		<![CDATA[
+			INSERT into adboard(adboard_num,adboard_category,  adboard_title, adboard_content, imageFileName, id, viewCnt)
+			VALUES(#{adboard_num},#{adboard_category},#{adboard_title},	#{adboard_content}, #{imageFileName},#{id} ,#{viewCnt})
+		]]>      
+	</insert>
+	
+  <select id="selectNewItemNO" resultType="int"  >
+		<![CDATA[
+			SELECT  nvl(max(adboard_num), 0) + 1 from adboard		
+		]]>
+	</select>
+	
+  <select id="selectItem" resultType="ItemVO"   parameterType="int">
+    <![CDATA[
+      SELECT * from adboard
+      where adboard_num = #{adboard_num}		
+    ]]>
+  </select>
+<update id="updateView" parameterType="java.util.Map">
+  UPDATE adboard SET viewCnt = viewCnt + 1
+  WHERE adboard_num = #{adboard_num}
+</update>
+  <update id="updateItem"  parameterType="java.util.Map">
+			update adboard
+			set adboard_title=#{adboard_title},	 
+			adboard_content=#{adboard_content}
+			 <if test="imageFileName!='' and imageFileName!=null">
+			  , imageFileName=#{imageFileName}
+			</if>
+			where adboard_num=#{adboard_num}
+	</update>
+	
+	<delete id="deleteItem"  parameterType="int">
+    <![CDATA[
+      delete from adboard
+      where adboard_num=#{adboard_num};
+    ]]>      
+  </delete>
+  
+
+ <!--다중 이미지 추가 SQL문 -->   
+  <!--
+    <insert id="insertNewItem"  parameterType="java.util.Map">
+    <![CDATA[
+      insert into board(adboard_num, id, adboard_title, adboard_content, imageFileName)
+      values(#{adboard_num}, #{id}, #{adboard_title}, #{adboard_content}, null)
+    ]]>      
+  </insert>
+
+ 
+   <insert id="insertNewImage"  parameterType="java.util.Map">
+    <foreach item="item"  collection="list"   open="INSERT ALL" 
+                  separator=" " close="SELECT * FROM DUAL" >
+      INTO t_imageFile(imageFileNO, imageFileName, adboard_num, regDate)
+      VALUES (#{item.imageFileNO}, #{item.imageFileName}, #{item.adboard_num}, sysdate)
+    </foreach>
+  </insert>
+ -->
+ 
+  <select id="selectNewImageFileNO" resultType="int"  >
+    <![CDATA[
+      SELECT  nvl(max(imageFileNO),0) from imageFile		
+    ]]>
+  </select>
+	
+
+  <select  id="selectImageFileList" resultMap="imgResult" parameterType="int">
+    <![CDATA[
+      SELECT * from imageFile
+      where adboard_num=#{adboard_num}	
+    ]]>
+  </select> 
+  
+</mapper>

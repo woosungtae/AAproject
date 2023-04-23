@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE tiles-definitions PUBLIC
+"-//Apache Software Foundation//DTD Tiles Configuration 2.0//EN"
+"http://tiles.apache.org/dtds/tiles-config_2_0.dtd">
+<tiles-definitions>
+	<definition name="/cs/csMain" extends="baseLayout" >
+      <put-attribute name="title" value="자주 하는 질문"/> 
+      <put-attribute name="body" value="/WEB-INF/views/cs/csMain.jsp"/>
+	</definition>
+	<definition name="/cs/csListItems" extends="baseLayout">
+	      <put-attribute name="title" value="1:1문의" />
+	      <put-attribute name="body" value="/WEB-INF/views/cs/csListItems.jsp" />
+	</definition>
+	<definition name="/cs/csItemForm" extends="baseLayout">
+		<put-attribute name="title" value="글쓰기창" />
+		<put-attribute name="body" value="/WEB-INF/views/cs/csItemForm.jsp" />
+	</definition>
+	<definition name="/cs/csViewItem" extends="baseLayout">
+	    <put-attribute name="title" value="글상세창" />
+	    <put-attribute name="body" value="/WEB-INF/views/cs/csViewItem.jsp" />
+    </definition>
+    <definition name="/cs/memCsListItems" extends="baseLayout">
+	    <put-attribute name="title" value="문의 내역" />
+	    <put-attribute name="body" value="/WEB-INF/views/cs/memCsListItems.jsp" />
+    </definition>
+    <definition name="/cs/termsOfService" extends="baseLayout">
+	    <put-attribute name="title" value="이용 약관" />
+	    <put-attribute name="body" value="/WEB-INF/views/cs/termsOfService.jsp" />
+    </definition>
+    <definition name="/cs/privacyPolicy" extends="baseLayout">
+	    <put-attribute name="title" value="개인정보처리방침" />
+	    <put-attribute name="body" value="/WEB-INF/views/cs/privacyPolicy.jsp" />
+    </definition>
+	  
+</tiles-definitions>

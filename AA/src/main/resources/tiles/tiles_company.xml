@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE tiles-definitions PUBLIC
+       "-//Apache Software Foundation//DTD Tiles Configuration 2.0//EN"
+       "http://tiles.apache.org/dtds/tiles-config_2_0.dtd">
+       
+<tiles-definitions>
+	<definition name="/company/addNewGoods" extends="baseLayout">
+       <put-attribute name="title" value="사업자 상품 등록" />
+       <put-attribute name="body" value="/WEB-INF/views/company/addNewGoods.jsp" />
+     </definition>
+      <definition name="/company/comGoodsInfo" extends="baseLayout" >
+      <put-attribute name="title" value="My 상품 조회"/> 
+      <put-attribute name="body" value="/WEB-INF/views/company/comGoodsInfo.jsp"/>
+	  </definition>
+	  <definition name="/company/comSaleGoodsInfo" extends="baseLayout" >
+      <put-attribute name="title" value="판매 내역"/> 
+      <put-attribute name="body" value="/WEB-INF/views/company/comSaleGoodsInfo.jsp"/>
+	  </definition>
+	  <definition name="/company/modifyGoodsInfo" extends="baseLayout" >
+      <put-attribute name="title" value="상품 수정"/> 
+      <put-attribute name="body" value="/WEB-INF/views/company/modifyGoodsInfo.jsp"/>
+	  </definition>
+	  <definition name="/company/prime" extends="mainLayout" >
+      <put-attribute name="title" value="Prime"/> 
+      <put-attribute name="body" value="/WEB-INF/views/company/prime.jsp"/>
+	  </definition>
+	  <definition name="/cs/csMain" extends="baseLayout" >
+      <put-attribute name="title" value="Prime"/> 
+      <put-attribute name="body" value="/WEB-INF/views/cs/csMain.jsp"/>
+	  </definition>
+
+</tiles-definitions>

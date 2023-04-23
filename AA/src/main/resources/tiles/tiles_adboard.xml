@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE tiles-definitions PUBLIC
+"-//Apache Software Foundation//DTD Tiles Configuration 2.0//EN"
+"http://tiles.apache.org/dtds/tiles-config_2_0.dtd">
+<tiles-definitions>
+	<definition name="/adboard/listItems" extends="baseLayout">
+	      <put-attribute name="title" value="글목록창" />
+	      <put-attribute name="body" value="/WEB-INF/views/adboard/listItems.jsp" />
+	</definition>
+	
+	<definition name="/adboard/listNotice" extends="baseLayout">
+	      <put-attribute name="title" value="공지사항" />
+	      <put-attribute name="body" value="/WEB-INF/views/adboard/listNotice.jsp" />
+	</definition>
+	
+	<definition name="/adboard/listEvent" extends="baseLayout">
+	      <put-attribute name="title" value="이벤트" />
+	      <put-attribute name="body" value="/WEB-INF/views/adboard/listEvent.jsp" />
+	</definition>
+	
+	<definition name="/adboard/listSite" extends="baseLayout">
+	      <put-attribute name="title" value="사이트 사용법" />
+	      <put-attribute name="body" value="/WEB-INF/views/adboard/listSite.jsp" />
+	</definition>
+	
+	<definition name="/adboard/itemForm" extends="baseLayout">
+		<put-attribute name="title" value="글쓰기창" />
+		<put-attribute name="body" value="/WEB-INF/views/adboard/itemForm.jsp" />
+	</definition>
+	
+	<definition name="/adboard/viewItem" extends="baseLayout">
+    <put-attribute name="title" value="글상세창" />
+    <put-attribute name="body" value="/WEB-INF/views/adboard/viewItem.jsp" />
+  </definition>
+  
+	
+</tiles-definitions>

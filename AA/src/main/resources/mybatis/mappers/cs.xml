@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+      PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+   
+<mapper namespace="mapper.cs">
+	<resultMap id="csItemsResult" type="csItemVO">
+		<result property="level" column="level" />
+	    <result property="cs_num" column="cs_num" />
+	    <result property="cs_title" column="cs_title" />
+	    <result property="cs_content" column="cs_content" />
+	    <result property="cs_category" column="cs_category" />
+	    <result property="status" column="status" />
+	    <result property="writeDate" column="writeDate" />
+	    <result property="imageFileName" column="imageFileName" />
+	    <result property="id" column="id" />
+  	</resultMap> 
+  
+  <resultMap id="imgResult" type="imageVO">
+	  <result property="imageFileNO" column="imageFileNO" />
+	  <result property="cs_num" column="cs_num" />
+	  <result property="imageFileName" column="imageFileName" />
+ </resultMap>
+ 
+  <select id="selectAllCsItemsList" resultMap="csItemsResult"   >
+    <![CDATA[
+		SELECT 
+	    CASE 
+	        WHEN (SELECT COUNT(*) FROM cs t2 WHERE t2.cs_num > t1.cs_num IS NULL) > 0 
+	        THEN CONCAT(REPEAT('  ', (SELECT COUNT(*) FROM cs t2 WHERE t2.cs_num > t1.cs_num IS NULL) - 1), '|--') 
+	        ELSE ''
+	    END AS cs_title_alias,
+	    t1.cs_num, t1.cs_category, t1.cs_title, t1.cs_content, t1.id, t1.writeDate, t1.viewCnt
+		FROM cs t1
+		ORDER BY t1.cs_num DESC;
+    ]]>
+  </select>
+  
+  <!--단일이미지 추가  -->
+	 
+  <insert id="insertNewCsItem"  parameterType="java.util.Map">
+		<![CDATA[
+			INSERT into cs(cs_num, cs_category, cs_title, cs_content, imageFileName, id, viewCnt)
+			VALUES(#{cs_num}, #{cs_category}, #{cs_title}, #{cs_content}, #{imageFileName}, #{id} , #{viewCnt})
+		]]>      
+  </insert>
+  
+  <select id="selectNewCsItemNO" resultType="int"  >
+		<![CDATA[
+			SELECT  nvl(max(cs_num), 0) + 1 from cs
+		]]>
+  </select>
+  
+  <select id="selectCsItem" resultType="csItemVO"   parameterType="int">
+    <![CDATA[
+      SELECT * from cs
+      where cs_num = #{cs_num}		
+    ]]>
+  </select>
+  
+  <update id="updateView" parameterType="java.util.Map">
+	  UPDATE cs SET viewCnt = viewCnt + 1
+	  WHERE cs_num = #{cs_num}
+  </update>
+  
+  <delete id="deleteCsItem"  parameterType="int">
+    <![CDATA[
+      delete from cs
+      where cs_num=#{cs_num};
+    ]]>      
+  </delete>
+  
+  <!-- 문의 내역 -->
+	<select id="memCsListItems" parameterType="String" resultType="csItemVO">
+       <![CDATA[
+         SELECT * from cs
+      	where id = #{id} order by writeDate desc;
+       ]]>
+   </select>
+</mapper>

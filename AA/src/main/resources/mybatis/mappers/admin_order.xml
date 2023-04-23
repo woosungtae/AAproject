@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+	PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="mapper.admin.order">
+	<resultMap id="orderGoodsResult" type="OrderVO">
+	    <result property="order_num" column="order_num" />
+		<result property="id" column="id" />
+		<result property="orderer_name" column="orderer_name" />
+		<result property="goods_num" column="goods_num" />
+		<result property="goods_title" column="goods_title" />
+		<result property="goods_resultPrice" column="goods_resultprice" />
+		<result property="order_price" column="order_price" />
+		<result property="cart_goods_qty" column="cart_goods_qty" />
+		<result property="order_goods_qty" column="order_goods_qty" />
+		<result property="order_goods_option" column="order_goods_option" />
+		
+		<result property="goods_fileName" column="goods_fileName" />
+		<result property="orderer_email" column="orderer_email" />
+		<result property="company_email" column="company_email" />
+		<result property="company_name" column="company_name" />
+		
+		
+		<result property="pay_method" column="pay_method" />
+		<result property="card_com_name" column="card_com_name" />
+		<result property="card_pay_month" column="card_pay_month" />
+		<result property="pay_order_time" column="pay_order_time" />
+		<result property="order_status" column="order_status" />
+		<result property="order_date" column="order_date" />
+	</resultMap>
+  <resultMap id="memberResult" type="MemberVO">
+		<result property="id" column="id" />
+		<result property="pwd" column="pwd" />
+		<result property="name" column="name" />
+		<result property="gender" column="gender" />
+		
+		<result property="jumin1" column="jumin1" />
+		<result property="jumin2" column="jumin2" />
+		<result property="tel" column="tel" />
+		<result property="smssts_yn" column="smssts_yn" />
+		<result property="email" column="email" />
+		<result property="emailsts_yn" column="emailsts_yn" />
+		
+		<result property="zipcode" column="zipcode" />
+		<result property="roadAdd" column="roadAdd" />
+		<result property="jibunAdd" column="jibunAdd" />
+		<result property="namujiAdd" column="namujiAdd" />
+		<result property="joinDate" column="joinDate" />
+		
+		<result property="point" column="point" />
+		<result property="status" column="status" />
+		<result property="nickname" column="nickname" />
+		<result property="del_yn" column="del_yn" />
+	</resultMap>	
+<select id="selectNewOrderList" resultMap="orderGoodsResult"   parameterType="java.util.HashMap"  >
+		  
+		  <!-- 주문 상품 목록을 표시합니다. -->
+		  select * from (
+			    select row_Number() over(order by order_date desc) as recNum,
+			    order_num,
+	           	id,
+	           	orderer_name,
+	          	goods_title,
+	          	order_goods_option,
+	          	order_goods_qty,
+	          	order_price,
+	          	order_status,
+	          	date_format(order_date,'%Y-%m-%d')  as order_date
+			from (
+			    select  order_num,
+	           	id,
+	           	orderer_name,
+	          	goods_title,
+	          	order_goods_option,
+	          	order_goods_qty,
+	          	order_price,
+	          	order_status,
+	          	order_date
+	              from goods_order
+			    where date_format(order_date,'%Y-%m-%d')  between #{beginDate} and #{endDate}
+				)a
+		)b						
+		where recNum between (#{section}-1)*100+ (#{pageNum}-1)*10+1 and (#{section}-1)*100+(#{pageNum})*10
+		order by order_date desc;			        
+	</select>
+	
+	<!-- 주문 상품의 배송 상태를 수정합니다. -->
+<update id="updateDeliveryState" parameterType="java.util.Map" >
+	   update t_shopping_order
+	    <set> 
+	      <if test=" delivery_state!='' and delivery_state!=null">
+	        delivery_state=#{delivery_state}
+	      </if>
+	    </set>
+	    where 
+	    order_id=#{order_id}
+	</update>	
+	
+    <select id="selectOrderDetail" resultMap="orderGoodsResult"   parameterType="int"  >
+	    <![CDATA[
+		    select * from goods_order
+            where order_num=#{order_num}
+    	]]>
+	</select>	
+	
+   <select id="selectOrderer" resultMap="memberResult"  parameterType="String"  >
+	    <![CDATA[
+			select * from member 
+			where id=#{id}
+		]]>
+	</select>	
+</mapper>

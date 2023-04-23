@@ -1,0 +1,235 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+	PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="mapper.admin.goods">
+<!-- 리절트 맵 정의 -->	
+	<resultMap id="goodsResult" type="goodsVO">
+		<result property="goods_num" column="goods_num" />
+		<result property="id" column="id" />
+		<result property="goods_title" column="goods_title" />
+		<result property="goods_content" column="goods_content" />
+		<result property="goods_point" column="goods_point" />
+		<result property="goods_intro" column="goods_intro" />
+		
+		<result property="goods_status" column="goods_status" />
+		<result property="goods_standardPrice" column="goods_standardPrice" />
+		<result property="goods_deluxePrice" column="goods_deluxePrice" />
+		<result property="goods_premiumPrice" column="goods_premiumPrice" />
+		<result property="goods_credate" column="goods_credate" />
+		<result property="goods_grade" column="goods_grade" />
+		<result property="goods_modify" column="goods_modify" />
+		
+		<result property="goods_fileName" column="fileName" />
+		<result property="goods_main_category" column="goods_main_category" />
+		<result property="goods_middle_category" column="goods_middle_category" />
+		<result property="goods_sub_category" column="goods_sub_category" />
+		<result property="goods_standardContent" column="goods_standardContent" />
+		<result property="goods_deluxeContent" column="goods_deluxeContent" />
+		<result property="goods_premiumContent" column="goods_premiumContent" />
+		<result property="totalSell" column="totalSell" />
+		<result property="goods_prime_yn" column="goods_prime_yn" />
+	</resultMap>		
+
+	<resultMap id="imageResult" type="ImageFileVO">
+	   <result property="goods_num" column="goods_num" />
+	   <result property="fileName" column="fileName" />
+	   <result property="reg_id" column="reg_id" />
+	   <result property="image_id" column="image_id" />
+	   <result property="fileType" column="fileType" />
+	   <result property="creDate" column="creDate" />
+	</resultMap>
+	
+	<resultMap id="orderGoodsResult" type="OrderVO">
+	    <result property="order_num" column="order_num" />
+		<result property="id" column="id" />
+		<result property="orderer_name" column="orderer_name" />
+		<result property="goods_num" column="goods_num" />
+		<result property="goods_title" column="goods_title" />
+		<result property="goods_resultPrice" column="goods_resultprice" />
+		<result property="order_price" column="order_price" />
+		<result property="cart_goods_qty" column="cart_goods_qty" />
+		<result property="order_goods_qty" column="order_goods_qty" />
+		<result property="order_goods_option" column="order_goods_option" />
+		
+		<result property="goods_fileName" column="goods_fileName" />
+		<result property="orderer_email" column="orderer_email" />
+		<result property="company_email" column="company_email" />
+		<result property="company_name" column="company_name" />
+		
+		
+		<result property="pay_method" column="pay_method" />
+		<result property="card_com_name" column="card_com_name" />
+		<result property="card_pay_month" column="card_pay_month" />
+		<result property="pay_order_time" column="pay_order_time" />
+		<result property="order_status" column="order_status" />
+		<result property="order_date" column="order_date" />
+	</resultMap>
+		 
+	<select id="selectNewGoodsList" resultMap="goodsResult"   parameterType="java.util.Map"  >
+	    <![CDATA[
+		  select * from (
+	   select row_Number() over(order by goods_credate desc) as recNum,
+	          goods_num,
+	          goods_title,
+	          id,
+	          totalSell,
+	          date_format(goods_credate,'%Y-%m-%d')  as goods_credate
+	       from (
+	             select  goods_num,
+	                     goods_title,
+	                     id,
+	                     totalSell,
+	                     goods_credate
+	              from goods
+	              where date_format(goods_credate,'%Y-%m-%d')  between #{beginDate} and #{endDate}  
+	            )a
+	)b							
+	where recNum between (#{section}-1)*100+ (#{pageNum}-1)*10+1 and (#{section}-1)*100+(#{pageNum})*10
+	order by goods_credate desc;	        
+    	]]>
+	</select>
+	
+	<select id="selectOrderGoodsList" resultMap="orderGoodsResult"   parameterType="java.util.Map"  >
+		  select * from (
+			    select row_Number() over(order by order_date desc) as recNum,
+			    order_num,
+	           	id,
+	           	orderer_name,
+	          	goods_title,
+	          	order_goods_option,
+	          	order_goods_qty,
+	          	order_price,
+	          	order_status,
+	          	date_format(order_date,'%Y-%m-%d')  as order_date
+			from (
+			    select  order_num,
+	           	id,
+	           	orderer_name,
+	          	goods_title,
+	          	order_goods_option,
+	          	order_goods_qty,
+	          	order_price,
+	          	order_status,
+	          	order_date
+	              from goods_order
+			    where date_format(order_date,'%Y-%m-%d')  between #{beginDate} and #{endDate}
+				)a
+		)b						
+		where recNum between (#{section}-1)*100+ (#{pageNum}-1)*10+1 and (#{section}-1)*100+(#{pageNum})*10
+		order by order_date desc;		        
+	</select>
+	
+ 
+
+	
+	<select id="selectGoodsDetail" resultMap="goodsResult"   parameterType="String"  >
+	    <![CDATA[
+		     select g.*,date_format(g.goods_credate,'%Y%m%d%H%i%s') as goods_credate, d.fileName from goods g, goods_image d
+	        where g.goods_num=d.goods_num
+	        and d.filetype='main_image'
+	        and g.goods_num=#{goods_num}
+	        order by g.goods_num
+    	]]>
+	</select>
+	<select id="selectGoodsImageFileList" resultMap="imageResult"   parameterType="String"  >
+	    <![CDATA[
+		    	select * from  goods_imgae
+		    	where  
+			    goods_num=#{goods_num}
+			    order by image_id asc
+    	]]>
+	</select>	
+	
+	
+<update id="updateGoodsInfo" parameterType="java.util.HashMap" >
+	   update t_shopping_goods
+	    <set> 
+	      <if test=" goods_sort!='' and goods_sort!=null">
+	        goods_sort=#{goods_sort},
+	      </if>
+	      <if test=" goods_title!='' and goods_title!=null">
+	        goods_title=#{goods_title},
+	      </if>
+	      <if test=" goods_writer!='' and goods_writer!=null">
+	        goods_writer=#{goods_writer},
+	      </if>
+	      <if test=" goods_publisher!='' and goods_publisher!=null">
+	        goods_publisher=#{goods_publisher},
+	      </if>
+	      <if test=" goods_price!='' and goods_price!=null">
+	        goods_price=#{goods_price},
+	      </if>
+	      <if test=" goods_published_date!='' and goods_published_date!=null">
+	        goods_published_date=#{goods_published_date},
+	      </if>
+	      <if test=" goods_sales_price!='' and goods_sales_price!=null">
+	        goods_sales_price=#{goods_sales_price},
+	      </if>
+	      <if test=" goods_point!='' and goods_point!=null">
+	        goods_point=#{goods_point},
+	      </if>
+	      <if test=" goods_page_total!='' and goods_page_total!=null">
+	        goods_page_total=#{goods_page_total},
+	      </if>
+	      <if test=" goods_isbn!='' and goods_isbn!=null">
+	        goods_isbn=#{goods_isbn},
+	      </if>
+	      <if test=" goods_delivery_price!='' and goods_delivery_price!=null">
+	        goods_delivery_price=#{goods_delivery_price},
+	      </if>
+	      <if test=" goods_delivery_date!='' and goods_delivery_date!=null">
+	        goods_delivery_date=#{goods_delivery_date},
+	      </if>
+	      <if test=" goods_status!='' and goods_status!=null">
+	        goods_status=#{goods_status},
+	      </if>
+	      <if test=" goods_writer_intro!='' and goods_writer_intro!=null">
+	        goods_writer_intro=#{goods_writer_intro},
+	      </if>
+	      <if test=" goods_intro!='' and goods_intro!=null">
+	        goods_intro=#{goods_intro},
+	      </if>
+	      <if test=" publisher_comment!='' and publisher_comment!=null">
+	        publisher_comment=#{publisher_comment},
+	      </if>
+	      <if test=" recommendation!='' and recommendation!=null">
+	        recommendation=#{recommendation},
+	      </if>
+	      <if test=" goods_contents_order!='' and goods_contents_order!=null">
+	        goods_contents_order=#{goods_contents_order:VARCHAR}
+	      </if>
+	     </set>
+	    where 
+	    goods_id=#{goods_id}
+	
+	</update>	
+	<update id="updateGoodsImage" parameterType="imageFileVO">
+		update t_goods_detail_image
+		set fileName=#{fileName}
+		where	 
+		goods_id=#{goods_id} and image_id=#{image_id}
+	</update>
+	
+	<delete id="deleteGoodsImage" parameterType="String">
+	  delete from t_goods_detail_image
+	  where image_id=#{image_id}
+	</delete>
+	
+<update id="updateOrderGoods" parameterType="java.util.HashMap" >
+	   update t_shopping_order
+	    <set> 
+	      <if test=" delivery_state!='' and delivery_state!=null">
+	        delivery_state=#{delivery_state},
+	      </if>
+	      <if test=" delivery_address!='' and delivery_address!=null">
+	        delivery_address=#{delivery_address},
+	      </if>
+	    </set>
+	    where 
+	    order_id=#{order_id}
+	
+	</update>		
+</mapper>
+

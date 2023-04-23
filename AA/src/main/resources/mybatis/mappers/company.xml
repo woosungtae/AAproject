@@ -1,0 +1,202 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+	PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+	
+<mapper namespace="mapper.company">
+	<!-- 리절트 맵 정의 -->	
+	<resultMap id="goodsResult" type="goodsVO">
+		<result property="goods_num" column="goods_num" />
+		<result property="id" column="id" />
+		<result property="goods_title" column="goods_title" />
+		<result property="goods_content" column="goods_content" />
+		<result property="goods_point" column="goods_point" />
+		<result property="goods_intro" column="goods_intro" />
+		
+		<result property="goods_status" column="goods_status" />
+		<result property="goods_standardPrice" column="goods_standardPrice" />
+		<result property="goods_deluxePrice" column="goods_deluxePrice" />
+		<result property="goods_premiumPrice" column="goods_premiumPrice" />
+		<result property="goods_credate" column="goods_credate" />
+		<result property="goods_grade" column="goods_grade" />
+		<result property="goods_modify" column="goods_modify" />
+		
+		<result property="goods_fileName" column="fileName" />
+		<result property="goods_main_category" column="goods_main_category" />
+		<result property="goods_middle_category" column="goods_middle_category" />
+		<result property="goods_sub_category" column="goods_sub_category" />
+		<result property="goods_standardContent" column="goods_standardContent" />
+		<result property="goods_deluxeContent" column="goods_deluxeContent" />
+		<result property="goods_premiumContent" column="goods_premiumContent" />
+		<result property="totalSell" column="totalSell" />
+		<result property="goods_prime_yn" column="goods_prime_yn" />
+	</resultMap>		
+
+	<resultMap id="imageResult" type="ImageFileVO">
+	   <result property="goods_num" column="goods_num" />
+	   <result property="fileName" column="fileName" />
+	   <result property="reg_id" column="reg_id" />
+	   <result property="image_id" column="image_id" />
+	   <result property="fileType" column="fileType" />
+	   <result property="creDate" column="creDate" />
+	</resultMap>
+	
+	<resultMap id="orderGoodsResult" type="OrderVO">
+	    <result property="order_num" column="order_num" />
+		<result property="id" column="id" />
+		<result property="orderer_name" column="orderer_name" />
+		<result property="goods_num" column="goods_num" />
+		<result property="goods_title" column="goods_title" />
+		<result property="goods_resultPrice" column="goods_resultprice" />
+		<result property="order_price" column="order_price" />
+		<result property="cart_goods_qty" column="cart_goods_qty" />
+		<result property="order_goods_qty" column="order_goods_qty" />
+		<result property="order_goods_option" column="order_goods_option" />
+		
+		<result property="goods_fileName" column="goods_fileName" />
+		<result property="orderer_email" column="orderer_email" />
+		<result property="company_email" column="company_email" />
+		<result property="company_name" column="company_name" />
+		
+		
+		<result property="pay_method" column="pay_method" />
+		<result property="card_com_name" column="card_com_name" />
+		<result property="card_pay_month" column="card_pay_month" />
+		<result property="pay_order_time" column="pay_order_time" />
+		<result property="order_status" column="order_status" />
+		<result property="order_date" column="order_date" />
+	</resultMap>
+	
+	<resultMap id="articlesResult" type="articleVO">
+    <result property="level" column="level" />
+    <result property="board_num" column="board_num" />
+    <result property="board_title" column="board_title" />
+    <result property="board_content" column="board_content" />
+    <result property="writeDate" column="writeDate" />
+    <result property="imageFileName" column="imageFileName" />
+       <result property="status" column="status" />
+  </resultMap> 
+	
+	
+	<insert id="insertNewGoods" parameterType="java.util.Map"   >
+	    <![CDATA[
+		   insert into goods(
+		                goods_num,
+		                id, 
+	                    goods_title,
+	                    goods_content,
+	                    goods_point,
+						goods_intro,
+						goods_status,
+						goods_standardPrice,
+						goods_deluxePrice,
+						goods_premiumPrice,
+						goods_credate,
+						goods_grade,
+						goods_modify,
+						goods_main_category,
+						goods_middle_category,
+						goods_sub_category,
+						goods_standardContent,
+			            goods_deluxeContent,
+			            goods_premiumContent,
+			            totalSell,
+			            goods_prime_yn
+			            )
+	  			values(
+	  			      #{goods_num},
+	  			      #{id},
+	  			      #{goods_title},
+	  			      #{goods_content},
+	  			      #{goods_point },
+	  			      #{goods_intro},
+	  			      #{goods_status},
+	  			      #{goods_standardPrice},
+	  			      #{goods_deluxePrice},
+	  			      #{goods_premiumPrice},
+	  			      #{goods_credate },
+	  			      #{goods_grade },
+	  			      #{goods_modify },
+	  			      #{goods_main_category},
+					  #{goods_middle_category},
+	  			      #{goods_sub_category },
+	  			      #{goods_standardContent },	
+	  			      #{goods_deluxeContent},
+	  			      #{goods_premiumContent},
+	  			      #{totalSell},
+	  			      #{goods_prime_yn}
+					 			 )
+		]]>
+	</insert> 
+	<insert id="insertGoodsImageFile" parameterType="imageFileVO">
+	  	<!-- 새 상품일 경우 첨부한 상품이미지 정보를 저장합니다. -->
+	    <![CDATA[
+		   insert into goods_image (image_id,
+		                                     goods_num,
+											 fileName,
+											 fileType,
+											 reg_id,
+											 creDate)
+		   					values(#{image_id},
+		   					 			 #{goods_num},
+		   							 	 #{fileName},
+		   								 #{fileType},
+		   								 #{reg_id},
+		   								 #{creDate} )
+		]]>
+	</insert>
+	<select id="selectMaxGoodsNum" resultType="int">
+       <![CDATA[
+         SELECT COALESCE(MAX(goods_num), 0) + 1 FROM goods;
+       ]]>
+   </select>
+   
+   <select id="selectMaxImageId" resultType="int">
+       <![CDATA[
+         SELECT COALESCE(MAX(image_id), 0) + 1 FROM goods_image;
+       ]]>
+   </select>
+   
+   <!-- 판매 내역 -->
+   <select id="comSaleGoodsInfo" parameterType="orderVO" resultMap="orderGoodsResult">
+	<![CDATA[
+			select DISTINCT order_num, goods_num, goods_title, order_goods_option, order_goods_qty, order_price, orderer_name, order_status, order_date,
+			goods_fileName
+			from goods_order
+			where company_name=#{company_name}
+			and (order_status=#{order_status} OR #{order_status} IS NULL)
+			order by order_date desc;
+			]]>
+	</select>
+   <!-- my 상품 조회 -->
+   <select id="comGoodsList" parameterType="String" resultType="goodsVO">
+       <![CDATA[
+         SELECT goods_num, goods_title, goods_standardPrice, goods_creDate FROM goods WHERE id=#{id} ORDER BY goods_credate;
+       ]]>
+   </select>
+   
+   <delete id="deleteGoods" parameterType="int">
+	    <![CDATA[
+	      delete from goods
+	      where goods_num=#{goods_num}
+    	]]>
+	</delete>
+	
+	<!-- My 게시글 조회 -->
+	<select id="comListArticles" parameterType="String" resultType="articleVO">
+       <![CDATA[
+         SELECT * from board
+      	where id = #{id} order by writeDate desc;
+       ]]>
+   </select>
+   
+   <select id="updateOrderStatus" parameterType="orderVO">
+       <![CDATA[
+         update goods_order
+			       set order_status=#{order_status}
+		 	       where order_num=#{order_num}
+       ]]>
+   </select>
+   
+   
+</mapper>
